@@ -11,7 +11,7 @@ const HomeScreen = () => {
     const navigate = useNavigate();
     const [apiClient, setApiClient] = useState(null)
     const [hotkey, setHotkey] = useState({ text: "" });
-    const [hotkeyAnimationModel, setHotkeyAnimationModel] = useState({ hotkeyID: "", itemInstanceID: "" });
+    const [hotkeyAnimationModel, setHotkeyAnimationModel] = useState({ hotkeyID: "", keyCombinationFirstValue: '', keyCombinationSecondValue: '' });
     const [hotkeyMoveModel, setHotkeyMoveModel] = useState({ size: "", positionX: "", positionY: "", rotation: "" });
     const [yourTestMessage, setYourTestMessage] = useState('')
     const [counter, setCounter] = useState(0)
@@ -22,6 +22,8 @@ const HomeScreen = () => {
     const [availableHotkeys, setAvailableHotkeys] = useState([])
 
     useEffect(() => {
+
+        if(localStorage.getItem('VTS.JS_TEST_AUTH_TOKEN_Login') === null) return navigate('/')
 
         const apiClient = new ApiClient({
             authTokenGetter: () => localStorage.getItem('VTS.JS_TEST_AUTH_TOKEN'),
@@ -87,16 +89,62 @@ const HomeScreen = () => {
         }
     }*/
 
-    const SaveModelAnimation = async () => {
+   /* const SaveModelAnimation = async () => {
         if (modelLoaded) {
-            await apiClient.hotkeyTrigger({
-                itemInstanceID: hotkeyAnimationModel.itemInstanceID,
-                hotkeyID: hotkeyAnimationModel.hotkeyID,
-            })
 
-            alert(`Hotkey saved!`)
-            setHotkeyAnimationModel({ ChangeBackground: "", ExecuteItemAction: "", ReloadMicrophone: "", MoveModel: "", ReloadTextures: "", CalibrateCam: "", TakeScreenshot: "" })
+
+            await apiClient.hotkeysInCurrentModel({
+                hotkeyID: hotkeyAnimationModel.hotkeyID,
+                keyCombination: ["Alt", "X"]
+            })
+            console.log({
+                hotkeyID: hotkeyAnimationModel.hotkeyID,
+                keyCombination: ["164", "87"]
+            })
+            toast.success('Hotkey Saved', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            setHotkeyAnimationModel({ hotkeyID: "", keyCombinationFirstValue: '', keyCombinationSecondValue: '' });
         }
+    }*/
+
+    const TriggerAnimation = async (id) => {
+        try {
+            await apiClient.hotkeyTrigger({
+                hotkeyID: id,
+               // itemInstanceID: ["Alt", "X"]
+            })
+            toast.success('hotkey triggered', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } catch (error) {
+            toast.error('not possible to save, something was wrong', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            
+        }
+       
     }
 
     const SaveModelMovement = async () => {
@@ -159,7 +207,7 @@ const HomeScreen = () => {
                     {<Card>
 
                         <Label>HotKeys List</Label>
-                        <Description2>View all the Model Hotkeys loaded</Description2>
+                        <Description2>Trigger and view the current Model Hotkeys loaded</Description2>
                         <CardContainer>
                             {
                                 availableHotkeys.map(h =>
@@ -170,6 +218,7 @@ const HomeScreen = () => {
                                             <Description>Description: <a style={{ color: 'black', fontWeight: '400' }}>{h.description}</a></Description>
                                             <Description>Type: <a style={{ color: 'black', fontWeight: '400' }}>{h.type}</a></Description>
                                             <Description>File: <a style={{ color: 'black', fontWeight: '400' }}>{h.file}</a></Description>
+                                            <Button onClick={() => TriggerAnimation(h.hotkeyID)}>Trigger</Button>
                                         </Subcard>
                                         <Line />
                                     </div>)
@@ -182,7 +231,7 @@ const HomeScreen = () => {
                     </Card>}
 
 
-                    {<Card>
+                    {/*<Card>
                         <Label>HotKeys Config</Label>
                         <Description2>set a hotkeys</Description2>
                         <CardContainer>
@@ -195,15 +244,26 @@ const HomeScreen = () => {
                             onChange={(e) => setHotkeyAnimationModel({ hotkeyID: e.target.value })}
                         />
 
-                        <Input
-                            type="text"
-                            value={hotkeyAnimationModel.itemInstanceID}
-                            placeholder='Item Instance Id'
-                            onChange={(e) => setHotkeyAnimationModel({ itemInstanceID: e.target.value })}
-                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <Input
+                                type="text"
+                                value={hotkeyAnimationModel.keyCombinationFirstValue}
+                                placeholder='Key Combination'
+                                onChange={(e) => setHotkeyAnimationModel({ keyCombinationFirstValue: e.target.value })}
+                            />
+
+                            <Input
+                                type="text"
+                                value={hotkeyAnimationModel.keyCombinationSecondValue}
+                                placeholder='key Combination Second'
+                                onChange={(e) => setHotkeyAnimationModel({ keyCombinationSecondValue: e.target.value })}
+                            />
+                        </div>
+
+
 
                         <Button onClick={() => SaveModelAnimation()}>Save</Button>
-                    </Card>}
+                        </Card>*/}
 
                     {<Card>
                         <Label>Move Model</Label>

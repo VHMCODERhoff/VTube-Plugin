@@ -11,6 +11,7 @@ const LoginScreen = () => {
   const SignIn = () => {
     if (email !== '' && password !== '') {
       if (email === 'test@example.com' && password === '123456') {
+        localStorage.setItem('VTS.JS_TEST_AUTH_TOKEN_Login', JSON.stringify({ email: email}))
         navigate('/dashboard')
       } else {
         alert('Email ou senha inválidos')
