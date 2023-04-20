@@ -23,7 +23,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
 
-        if(localStorage.getItem('VTS.JS_TEST_AUTH_TOKEN_Login') === null) return navigate('/')
+        if (localStorage.getItem('VTS.JS_TEST_AUTH_TOKEN_Login') === null) return navigate('/')
 
         const apiClient = new ApiClient({
             authTokenGetter: () => localStorage.getItem('VTS.JS_TEST_AUTH_TOKEN'),
@@ -89,37 +89,37 @@ const HomeScreen = () => {
         }
     }*/
 
-   /* const SaveModelAnimation = async () => {
-        if (modelLoaded) {
-
-
-            await apiClient.hotkeysInCurrentModel({
-                hotkeyID: hotkeyAnimationModel.hotkeyID,
-                keyCombination: ["Alt", "X"]
-            })
-            console.log({
-                hotkeyID: hotkeyAnimationModel.hotkeyID,
-                keyCombination: ["164", "87"]
-            })
-            toast.success('Hotkey Saved', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-            setHotkeyAnimationModel({ hotkeyID: "", keyCombinationFirstValue: '', keyCombinationSecondValue: '' });
-        }
-    }*/
+    /* const SaveModelAnimation = async () => {
+         if (modelLoaded) {
+ 
+ 
+             await apiClient.hotkeysInCurrentModel({
+                 hotkeyID: hotkeyAnimationModel.hotkeyID,
+                 keyCombination: ["Alt", "X"]
+             })
+             console.log({
+                 hotkeyID: hotkeyAnimationModel.hotkeyID,
+                 keyCombination: ["164", "87"]
+             })
+             toast.success('Hotkey Saved', {
+                 position: "top-right",
+                 autoClose: 5000,
+                 hideProgressBar: false,
+                 closeOnClick: true,
+                 pauseOnHover: true,
+                 draggable: true,
+                 progress: undefined,
+                 theme: "light",
+             });
+             setHotkeyAnimationModel({ hotkeyID: "", keyCombinationFirstValue: '', keyCombinationSecondValue: '' });
+         }
+     }*/
 
     const TriggerAnimation = async (id) => {
         try {
             await apiClient.hotkeyTrigger({
                 hotkeyID: id,
-               // itemInstanceID: ["Alt", "X"]
+                // itemInstanceID: ["Alt", "X"]
             })
             toast.success('hotkey triggered', {
                 position: "top-right",
@@ -142,10 +142,41 @@ const HomeScreen = () => {
                 progress: undefined,
                 theme: "light",
             });
-            
+
         }
-       
+
     }
+
+    const ChangeModel = async (m) => {
+        try {
+            apiClient?.modelLoad({ modelID: m.modelID })
+            window.location.reload();
+            toast.success('model changed', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } catch (error) {
+            toast.error('not possible to save, something was wrong', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+    }
+
+
+
 
     const SaveModelMovement = async () => {
         if (modelLoaded) {
@@ -198,7 +229,7 @@ const HomeScreen = () => {
                         <CardContainer>
                             {availableModels.map(m =>
                                 <div key={m.modelID}>
-                                    <Button onClick={() => apiClient?.modelLoad({ modelID: m.modelID })}>{m.modelName}</Button>
+                                    <Button onClick={() => ChangeModel(m)}>{m.modelName}</Button>
                                 </div>)}
                         </CardContainer>
                     </Card>
